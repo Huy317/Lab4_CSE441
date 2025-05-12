@@ -1,0 +1,69 @@
+import React from "react";
+import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+
+import { useSelector } from "react-redux";
+
+const ContactItem = ({ contact }) => {
+    return (
+        <View style={styles.itemContainer}>
+            <Image source={{uri: contact.avatar}} style={styles.image}/>
+
+            <View style={styles.textContainer}>
+                <Text style={styles.name}>{contact.name}</Text>
+                <Text style={styles.phone}>{contact.phone}</Text>
+            </View>
+        </View>
+    );
+}
+
+const Contacts = ({}) =>{
+    const contacts = useSelector((state) => state.contacts);
+    
+    return(
+        <View style={styles.container}>
+            <FlatList
+                data={contacts}
+                keyExtractor={(item) => item.phone}
+                renderItem={({item}) => <ContactItem contact={item} />}
+            />
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        paddingHorizontal: 10,
+    },
+    itemContainer:{
+        flex: 1,
+        flexDirection: "row",
+        paddingVertical: 20,
+        paddingHorizontal: 10,
+        borderBottomColor: "black",
+        borderBottomWidth: StyleSheet.hairlineWidth,
+    },
+    image: {
+        width: 50,
+        height: 50,
+        borderRadius: 50,
+    },
+    textContainer: {
+        marginLeft: 20,
+        justifyContent: "center",
+        paddingLeft: 10,
+    },
+    name: {
+        fontSize: 20,
+        fontWeight: "bold",
+    },
+    phone: {
+        fontSize: 16,
+        color: "blue",
+    },
+
+});
+
+
+export default Contacts;
