@@ -1,49 +1,66 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 
-const ContactItem = ({ contact }) => {
-    return (
-        <View style={styles.itemContainer}>
-            <Image source={{uri: contact.avatar}} style={styles.image}/>
 
-            <View style={styles.textContainer}>
-                <Text style={styles.name}>{contact.name}</Text>
-                <Text style={styles.phone}>{contact.phone}</Text>
-            </View>
-        </View>
-    );
-}
 
-const Contacts = ({}) =>{
+const Contacts = ({ navigation }) => {
     const [contacts, setContacts] = useState([]);
+
+    const ContactItem = (contact) => {
+        contact = contact.contact;
+        return (
+            <TouchableOpacity onPress={() => {
+                navigation.navigate("ProfileContact", {
+                    name: contact.name,
+                    avatar: contact.avatar,
+                    phone: contact.phone,
+                    cell: contact.cell,
+                    email: contact.email,
+                    favorite: contact.favorite
+                });
+            }}>
+                <View style={styles.itemContainer}>
+
+                    <Image source={{ uri: contact.avatar }} style={styles.image} />
+
+
+
+                    <View style={styles.textContainer}>
+                        <Text style={styles.name}>{contact.name}</Text>
+                        <Text style={styles.phone}>{contact.phone}</Text>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        );
+    }
 
     const loadContacts = async () => {
         try {
             const value = await AsyncStorage.getItem("contacts");
-            if(value !== null) {
+            if (value !== null) {
                 console.log("contacts from storage", value);
                 setContacts(JSON.parse(value));
             }
-        }catch (e) {
+        } catch (e) {
             console.log(e);
         }
     }
-    
+
     useEffect(() => {
         loadContacts();
     }, []);
 
-    
-    console.log(contacts);
 
-    return(
+    // console.log(contacts);
+
+    return (
         <View style={styles.container}>
             <FlatList
                 data={contacts}
                 keyExtractor={(item) => item.phone}
-                renderItem={({item}) => <ContactItem contact={item} />}
+                renderItem={({ item }) => <ContactItem contact={item} />}
             />
         </View>
     );
@@ -55,7 +72,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         paddingHorizontal: 10,
     },
-    itemContainer:{
+    itemContainer: {
         flex: 1,
         flexDirection: "row",
         paddingVertical: 20,

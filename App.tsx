@@ -3,10 +3,30 @@ import { StyleSheet, Text, View } from "react-native";
 // import store, { fetchContactsSuccess, mapContacts } from "./src/Store";
 import Contacts from "./src/Contacts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ProfileContact from "./src/ProfileContact";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
 
+const Stack = createStackNavigator();
 
-
-
+const ContactListScreen = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+          <Stack.Screen
+            name="Contacts"
+            component={Contacts}
+            options={{ title: 'Contact List' }}
+          />
+          <Stack.Screen
+            name="ProfileContact"
+            component={ProfileContact}
+            options={({route}) => ({title: "contact profile",})}
+          />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
 
 const App = () => {
   useEffect(() => {
@@ -35,7 +55,7 @@ const App = () => {
 
     const fetchContacts = async () => {
       try {
-        const response = await fetch('https://randomuser.me/api/?results=10');
+        const response = await fetch('https://randomuser.me/api/?results=15');
         const data = await response.json();
         const mappedContacts = data.results.map(mapContacts);
         console.log('Mapped Contacts:', mappedContacts);
@@ -54,9 +74,7 @@ const App = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Contacts />
-    </View>
+    <ContactListScreen/>
 
   );
 }
