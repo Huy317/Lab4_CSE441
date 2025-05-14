@@ -1,7 +1,7 @@
-import React from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, View } from "react-native";
 
-import { useSelector } from "react-redux";
 
 const ContactItem = ({ contact }) => {
     return (
@@ -17,8 +17,27 @@ const ContactItem = ({ contact }) => {
 }
 
 const Contacts = ({}) =>{
-    const contacts = useSelector((state) => state.contacts);
+    const [contacts, setContacts] = useState([]);
+
+    const loadContacts = async () => {
+        try {
+            const value = await AsyncStorage.getItem("contacts");
+            if(value !== null) {
+                console.log("contacts from storage", value);
+                setContacts(JSON.parse(value));
+            }
+        }catch (e) {
+            console.log(e);
+        }
+    }
     
+    useEffect(() => {
+        loadContacts();
+    }, []);
+
+    
+    console.log(contacts);
+
     return(
         <View style={styles.container}>
             <FlatList
