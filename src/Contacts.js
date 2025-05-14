@@ -40,7 +40,7 @@ const Contacts = ({ navigation }) => {
         try {
             const value = await AsyncStorage.getItem("contacts");
             if (value !== null) {
-                console.log("contacts from storage", value);
+                // console.log("contacts from storage", value);
                 setContacts(JSON.parse(value));
             }
         } catch (e) {
